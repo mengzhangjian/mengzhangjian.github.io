@@ -12,14 +12,14 @@ github_repo: "https://github.com/mengzhangjian/mengzhangjian.github.io.git" # yo
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "改变，行动，自律!"
-sidebar-avatar: /img/avatar-by.png      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/avatar-by.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
 # SNS settings
 RSS: false
 # weibo_username:     qiubaiying
-zhihu_username:     张建
+zhihu_username:     mengzhangjian
 github_username:    mengzhangjian
 facebook_username:  mengzhangjian
 jianshu_username:   33abd4ccb0fc
