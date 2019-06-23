@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      CUDA - 原子性
+title:      CUDA - 流(Stream)
 subtitle:   CUDA学习
-date:       2019-06-19
+date:       2019-06-22
 author:     BY    J
 header-img: img/home-bg-o.jpg
 catalog: true
