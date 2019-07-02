@@ -123,10 +123,44 @@ Strip-mining技术.取长循环为分阶段实现.如果用16*16的TILE_WIDTH,�
 
 上述有两个假设,首先矩阵的宽度是BLOCK宽度的倍数.二是矩阵必须是方形矩阵.下面一节将打破这两个假设.
 
+## 4.6 Boundary Checks
 
+我们现在扩展这个矩阵乘法算法到可以处理任意的矩阵宽度.这次扩展可以使核能处理任意宽度不是tile宽度的倍数的情况.下面依然是方形矩阵.我们需要检查输入矩阵的有效情况.边界检查:
 
+```
+Row < WIDTH && (ph * TILE_WIDTH + tx) < WIDTH)
+(ph * TILE_WIDTH + ty) < WIDTH && Col < WIDTH
+```
+代码:
+```
+for(int ph = 0; ph < ceil(Width / (float)TILE_WIDTH; ++ph)
+{
+ if((ROW < WIDTH)&&(ph * TILE_WIDTH + tx) < Width)
+     Mds[ty][tx] = M[Row * Width + ph * TILE_WIDTH + tx];
+ if((ph * TILE_WIDTH + ty) < Width && Col < Width)
+     Nds[ty][tx] = N[(ph*TILE_WIDTH + ty)*Width + Col];
+ __syncthreads();
+ for(int k = 0; k < TILE_WIDTH; ++k){
+  Pvalue += Mds[ty][k] * Nds[k][tx];
+ }
+ __syncthreads();
+}
+if((Row < Width) && (Col < Width) P[Row * Width + Col] = Pvalue;)
+```
+下面距离通用的矩阵乘法核还差一步,对于J* K的M矩阵与K * L的N矩阵相乘.
+```
+M: Col < J && (ph * TILE_WIDTH + tx) < K
+N: (ph * TILE_WIDTH + ty) < K && Col < L
+```
+## 4.7 Memory as a Limiting Factor to Parallelism
+通常每个线程要求的资源越多,每个SM中存在的线程则越少.
+cudaGetDeviceProperties(&dev_prop)
+dev_prop.regsPerBlock 查看register的数量
+对于共享内存也是,对于矩阵乘法来说,对于16 * 16的tile_size, 则每个block需要16 * 16 *4 = 1k字节的存储(说明 每个元素是浮点数, 大小为4个字节).加上Nds, 则需要2K.所以 一个16K的共享内存只允许 同时存在8个block.在这里,真正的限制是线程数量.如果每个SM有1536个线程,则只允许存在6个block.所以只能用6 * 2KB = 12KB的共享内存.
+每一代的共享内存数量都不同,我们可能希望代码可以随意调整一个kernel中的共享内存大小. 
+通过cudaGetDeviceProperties(&dev_prop), dev_prop.sharedMemPerBlock.
 
-
+**extern  与size_t需要注意.以后需要回看**
 
 
 
